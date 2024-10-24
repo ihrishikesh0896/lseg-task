@@ -11,8 +11,6 @@ const App = () => {
     { code: 'NYSE', name: 'New York Stock Exchange' },
     { code: 'NASDAQ', name: 'Nasdaq' }
   ];
-
-  // Fetch stock data based on exchange selection
   const handleExchangeSelect = (exchangeCode) => {
     setExchange(exchangeCode);
     axios.get(`http://localhost:5000/api/stocks/${exchangeCode}`)
@@ -23,11 +21,6 @@ const App = () => {
       .catch((error) => {
         console.error('Error fetching stock data:', error);
       });
-  };
-
-  // Handle stock selection to display the stock price
-  const handleStockSelect = (stock) => {
-    setSelectedStock(stock);
   };
 
   return (
@@ -46,11 +39,27 @@ const App = () => {
       {exchange && !selectedStock && (
         <div className="stocks-menu">
           <h2>Top 5 Stocks in {exchange}</h2>
-          {stocks.map((stock) => (
-            <button key={stock.code} onClick={() => handleStockSelect(stock)}>
-              {stock.stockName}
-            </button>
+          <table className='border'>
+            <thead>
+              <tr>
+                <th>Top Stocks</th>
+              </tr>
+              </thead>
+              <tbody>
+                
+                  
+                  {stocks.map((stock) => (
+                    <tr>
+            <td key={stock.code}>{stock.stockName}</td>
+            </tr>
+            
           ))}
+
+{/* <button  onClick={() => handleStockSelect(stock)}></button> */}
+                
+              </tbody>
+            </table>
+          
           <button onClick={() => setExchange(null)}>Go to Home Menu</button>
         </div>
       )}
