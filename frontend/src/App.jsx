@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
+import { FaRobot } from "react-icons/fa6";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
+
 import axios from 'axios';
+import './App.css'
 
 const App = () => {
   const [exchange, setExchange] = useState(null);
-  const [stocks, setStocks] = useState([]);
+  const [stocks, setStocks] = useState(null);
   const [selectedStock, setSelectedStock] = useState(null);
 
   const exchanges = [
@@ -23,53 +30,79 @@ const App = () => {
       });
   };
 
+  const handleStockSelect = (stock) => {
+    setSelectedStock(stock);
+  };
+
+  const handleCleanUp = () =>{
+    setStocks(null)
+    setSelectedStock(null)
+    setExchange(null)
+
+
+  }
+
   return (
     <div className="app">
-      <h1>Stock Exchange Chatbot</h1>
-      {!exchange && (
-        <div className="menu">
-          <h2>Select a Stock Exchange</h2>
-          {exchanges.map((ex) => (
-            <button key={ex.code} onClick={() => handleExchangeSelect(ex.code)}>
-              {ex.name}
-            </button>
-          ))}
-        </div>
-      )}
-      {exchange && !selectedStock && (
-        <div className="stocks-menu">
-          <h2>Top 5 Stocks in {exchange}</h2>
-          <table className='border'>
-            <thead>
-              <tr>
-                <th>Top Stocks</th>
-              </tr>
-              </thead>
-              <tbody>
-                
-                  
-                  {stocks.map((stock) => (
-                    <tr>
-            <td key={stock.code}>{stock.stockName}</td>
-            </tr>
-            
-          ))}
-
-{/* <button  onClick={() => handleStockSelect(stock)}></button> */}
-                
-              </tbody>
-            </table>
-          
-          <button onClick={() => setExchange(null)}>Go to Home Menu</button>
-        </div>
-      )}
+<div className="chat-container">
+    <div className="chat-header">
+    <FaRobot /> LSEF chatbot
+    </div>
+    <div className="chat-messages" id="chatMessages">
+      <span className="message bot">Hello! Welcome to LSEG. I'm here to help you.</span>
+      <Card style={{ width: '50rem' }}
+      >
+      <Card.Header className='header'>Please select a Stock Exchange.</Card.Header>
+      <ListGroup variant="flush">
+      {exchanges.map((ex) => (
+        <ListGroup.Item className='text-center' key={ex.code} onClick={() => handleExchangeSelect(ex.code)}>{ex.name}</ListGroup.Item>
+      ))}
+      </ListGroup>
+    </Card>
+<div className='result-block'>
+    {exchange && (
+      <span className="stocks-message">
+        {exchange}
+      </span>
+    )}
+    </div>
+{stocks && (
+  <Card style={{ width: '50rem' }}>
+      <Card.Header className='header'>Please select a stock.</Card.Header>
+      <ListGroup variant="flush">
+      {stocks.map((stock) => (
+      <ListGroup.Item className='text-center' key={stock.code} onClick={() => handleStockSelect(stock)}>{stock.stockName}</ListGroup.Item>
+    ))}
+      </ListGroup>
+    </Card>
+)}
+<div className='result-block'>
       {selectedStock && (
-        <div className="stock-details">
-          <h2>{selectedStock.stockName} - Price: ${selectedStock.price}</h2>
-          <button onClick={() => setSelectedStock(null)}>Back to Stock Menu</button>
-          <button onClick={() => setExchange(null)}>Go to Home Menu</button>
-        </div>
+        <span className="stocks-message">
+          {selectedStock.stockName}
+        </span>
       )}
+      </div>
+
+
+
+{selectedStock && (
+  <Card style={{ width: '50rem' }}>
+      <Card.Header className='header'>Stock Price of {selectedStock.stockName} is Price: ${selectedStock.price} Please select an option.</Card.Header>
+      <ListGroup variant="flush">
+      
+      <ListGroup.Item className='text-center' onClick={() => handleCleanUp()}>Main Menu</ListGroup.Item>
+      <ListGroup.Item className='text-center' onClick={() => setSelectedStock(null)}>Go Back</ListGroup.Item>
+      </ListGroup>
+    </Card>
+)}
+
+    </div>
+  </div>
+      
+      
+      
+      
     </div>
   );
 };
